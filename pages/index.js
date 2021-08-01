@@ -27,7 +27,7 @@ export default function Index() {
         <div className="container relative mx-auto">
           <div className="items-center flex flex-wrap">
             <div className="w-full lg:w-6/12 px-4 ml-auto mr-auto text-center item-center">
-              <div className="pr-12">
+            
                 <h1 className="text-white font-bold text-5xl uppercase">
                   Discover your solar savings
                 </h1>
@@ -35,9 +35,13 @@ export default function Index() {
                   Find out what is possible for your household and community
                   when you switch to solar!
                 </p>
-                <SearchBar></SearchBar>
-                <div id="match-list" className="w-full"></div>
-              </div>
+                <SearchBar>
+                </SearchBar>
+
+                <div id="match-list" className="absolute lg:w-6/12 pl-4 ml-auto h-24 align-left flex-col overflow-y-auto">
+
+                </div>
+
             </div>
           </div>
         </div>
