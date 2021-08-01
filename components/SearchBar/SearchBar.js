@@ -10,7 +10,7 @@ export default function SearchBar() {
     useEffect(() => {
         //listen to the input form for text being inserted
     const search = document.getElementById("search");
-    const matchList = document.getElementById('match-list');
+    const matchList = document.getElementById("match-list");
     
 
     const searchBoston = async searchText => {
@@ -34,11 +34,16 @@ export default function SearchBar() {
     const outputHTML = matches => {
         if(matches.length > 0){
             const html = matches.map(match => `
-            <div class="w-5/6 rounded-l p-4 border-t mr-0 border-b border-l text-gray-800 border-gray-200 bg-white">
-            <p> ${match.MAIL_ADDRESS}, ${match.CITY} </p>
+            <div onClick={handleClickStreet} class="border-b border-l text-gray-800 border-gray-200 bg-white">
+            <p class="w-full text-left p-2 "> ${match.MAIL_ADDRESS}, ${match.CITY} </p>
             </div>
             `).join('');
     
+            matchList.innerHTML = html;
+        }
+
+        else{
+            const html = ``;
             matchList.innerHTML = html;
         }
     }
@@ -48,8 +53,8 @@ export default function SearchBar() {
     
     return (
         
-    <form class="m-4 flex w-full">
-        <input type="text" id="search" class="w-full rounded-l p-4 border-t mr-0 border-b border-l text-gray-800 border-gray-200 bg-white" placeholder="Enter Your Address"/>
+    <form autoComplete="off" class="w-11/12 mt-4 flex lg:w-6/12 px-4 ml-auto">
+        <input type="text" id="search" class="w-full border-t mr-0 border-b border-l text-gray-800 border-gray-200 bg-white" placeholder="Enter Your Address"/>
         <button class="flex-none rounded-r bg-red-500  text-white font-bold p-4 uppercase border-t border-b border-r ">
             Check My Roof
             </button>
