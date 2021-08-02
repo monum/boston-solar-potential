@@ -34,9 +34,9 @@ export default function SearchBar() {
     const outputHTML = matches => {
         if(matches.length > 0){
             const html = matches.map(match => `
-            <div onClick={handleClickStreet} class="border-b border-l text-gray-800 border-gray-200 bg-white">
-            <p class="w-full text-left p-2 "> ${match.MAIL_ADDRESS}, ${match.CITY} </p>
-            </div>
+            <button class="bg-white md:hover:bg-gray-400 hover:bg-gray-400 text-left p-2 block w-full border-b text-black border-gray-200">
+            ${match.MAIL_ADDRESS}, ${match.CITY} 
+            </button>
             `).join('');
     
             matchList.innerHTML = html;
@@ -53,9 +53,9 @@ export default function SearchBar() {
     
     return (
         
-    <form autoComplete="off" class="w-11/12 mt-4 flex lg:w-6/12 px-4 ml-auto">
+    <form autoComplete="off" class="w-full mt-4 flex px-4 ml-auto">
         <input type="text" id="search" class="w-full border-t mr-0 border-b border-l text-gray-800 border-gray-200 bg-white" placeholder="Enter Your Address"/>
-        <button class="flex-none rounded-r bg-red-500  text-white font-bold p-4 uppercase border-t border-b border-r ">
+        <button class="flex-none rounded-r bg-red-500 text-white font-bold p-4 uppercase border-t border-b border-r ">
             Check My Roof
             </button>
         

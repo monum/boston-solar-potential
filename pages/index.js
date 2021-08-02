@@ -38,7 +38,7 @@ export default function Index() {
                 <SearchBar>
                 </SearchBar>
 
-                <div id="match-list" className="absolute lg:w-6/12 pl-4 ml-auto h-24 align-left flex-col overflow-y-auto">
+                <div id="match-list" className="absolute pl-4 ml-auto h-24 align-left flex-col overflow-y-auto">
 
                 </div>
 
