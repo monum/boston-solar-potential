@@ -11,7 +11,7 @@ export default function Index() {
     <>
       <IndexNavbar fixed />
       <div className="relative flex m-auto content-center items-center justify-center min-h-screen-75">
-        <div className="absolute bg-auto bgtop-0 w-full h-full bg-center bg-cover">
+        <div className="absolute top-0 w-full h-full bg-center bg-cover">
           <div
             className="absolute top-0 w-full h-full bg-bottom bg-cover"
             style={{
