@@ -6,7 +6,9 @@ import Router from "next/router";
 
 import PageChange from "components/PageChange/PageChange.js";
 
+import "mapbox-gl/dist/mapbox-gl.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+
 import "styles/tailwind.css";
 
 Router.events.on("routeChangeStart", (url) => {
@@ -70,8 +72,17 @@ export default class MyApp extends App {
             name="viewport"
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
           />
-          <title>Notus NextJS by Creative Tim</title>
+          <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+          <link
+            rel="stylesheet"
+            href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css"
+            type="text/css"
+          ></link>
+          <title>Solar Boston</title>
+          
           <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+          <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+          <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" type="text/css"></link>
         </Head>
         <Layout>
           <Component {...pageProps} />

@@ -9,6 +9,10 @@ import SearchBar from "components/SearchBar/SearchBar";
 import Map from "components/Maps/MapboxMap.js";
 
 export default function Index() {
+
+  
+
+
   return (
     <>
       <IndexNavbar fixed />

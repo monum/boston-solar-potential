@@ -4,6 +4,9 @@ import React, {useEffect, Component } from 'react';
 const token = "pk.eyJ1Ijoibm9qaWJlIiwiYSI6ImNrcHloOXg1OTA0M3cyb21uYW83d2V3MGwifQ.GlZLAGPrDIf1lihGKJIBqw"
 
 
+
+
+
 export default function SearchBar() {
     //Wait for the component to load before attempting to inject any data
 
@@ -34,7 +37,7 @@ export default function SearchBar() {
     const outputHTML = matches => {
         if(matches.length > 0){
             const html = matches.map(match => `
-            <button class="bg-white md:hover:bg-gray-400 hover:bg-gray-400 text-left p-2 block w-full border-b text-black border-gray-200">
+            <button class="bg-white hover:bg-gray-400 text-left p-2 pr-10 block w-full border-b text-black border-gray-200">
             ${match.MAIL_ADDRESS}, ${match.CITY} 
             </button>
             `).join('');
@@ -53,8 +56,8 @@ export default function SearchBar() {
     
     return (
         
-    <form autoComplete="off" class="w-full mt-4 flex px-4 ml-auto">
-        <input type="text" id="search" class="w-full border-t mr-0 border-b border-l text-gray-800 border-gray-200 bg-white" placeholder="Enter Your Address"/>
+    <form autoComplete="off" class="w-full mt-4 flex mx-auto justify-center">
+        <input type="text" id="search" class="w-6/12 border-t border-b border-l text-gray-800 border-gray-200 bg-white" placeholder="Enter Your Address"/>
         <button class="flex-none rounded-r bg-red-500 text-white font-bold p-4 uppercase border-t border-b border-r ">
             Check My Roof
             </button>
