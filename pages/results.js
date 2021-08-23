@@ -1,51 +1,38 @@
 /* eslint-disable react/jsx-no-target-blank */
-import React from "react";
+import { useContext, useState, useEffect, React } from "react";
 import Link from "next/link";
-
+import SessionContext from "pages/sessionContext"
 import IndexNavbar from "components/Navbars/IndexNavbar.js";
 import Footer from "components/Footers/Footer.js";
-import SearchBar from "components/SearchBar/SearchBar";
-import BostonLogo from "components/SVG/BostonLogoWhiteSVG";
-import SolarPanelLogo from "components/SVG/SolarPanelSVG";
+import Map from "components/Maps/MapboxMap.js";
+import { useRouter } from "next/router";
+import "components/Maps/mapSidebar.module.css";
 
-export default function Index() {
+
+
+
+export default function Index() { 
+  //global variables that hold the geoData == Mapbox data, property Data == Boston.gov Data, solarSavings == VSLR Calculations
+  
+  
+  //router to manipulate the URL
+  const router = useRouter();
+
+  //Map location, get default from the URL query
+  const [lng, setLng] = useState(router.query.lng) 
+  const [lat, setLat] = useState(router.query.lat);
+
+  
+    
   return (
     <>
       <IndexNavbar fixed />
-      <div className="relative flex m-auto content-center items-center justify-center min-h-screen-75">
-        <div className="absolute top-0 w-full h-full bg-center bg-cover">
-          <div
-            className="absolute top-0 w-full h-full bg-bottom bg-cover"
-            style={{
-              backgroundImage:
-                "url('https://images.unsplash.com/photo-1602095656818-c66394568279?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1808&q=80')",
-            }}
-          ></div>
-          <span
-            id="blackOverlay"
-            className="w-full h-full absolute opacity-75 bg-black"
-          ></span>
+      <div className="relative flex bgtop-0 min-h-screen">
+        <div class="relative w-full h-full ">
+          <Map coordinates={[lng, lat]} >
+          
+         </Map>
         </div>
-        <div className="container relative mx-auto justify-center align-middle center">
-          
-          
-           
-
-            <h1 className="text-white text-center mx-auto font-bold text-5xl uppercase">
-              Discover your solar savings
-            </h1>
-            <p className="mt-4 text-center text-lg text-blueGray-200">
-              Enter your address below to discover how you save with solar!
-            </p>
-            
-              <SearchBar/>
-              <div
-                id="match-list"
-                className="w-6/12 absolute pl-4 h-24 flex-col overflow-y-auto"
-              ></div>
-            
-          </div>
-       
       </div>
 
       <section className="mt-48 md:mt-40 pb-40 relative bg-blueGray-100">
@@ -70,6 +57,9 @@ export default function Index() {
         </div>
         <div className="container mx-auto">
           <div className="flex flex-wrap items-center">
+            <h1 className="-mt-24 mx-auto text-blue font-bold text-5xl uppercase relative">
+              How the Boston Solar App Works
+            </h1>
             <div className="flex"></div>
           </div>
         </div>
@@ -563,4 +553,9 @@ export default function Index() {
       <Footer />
     </>
   );
-}
+  
+              
+};
+
+
+

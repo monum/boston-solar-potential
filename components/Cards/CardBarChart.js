@@ -1,35 +1,19 @@
 import React from "react";
 import Chart from "chart.js";
 
-export default function CardBarChart() {
+export default function CardBarChart(labelArray, labelData, chartTitle, xTitle, yTitle) {
   React.useEffect(() => {
     let config = {
       type: "bar",
       data: {
-        labels: [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-        ],
+        labels: labelArray,
         datasets: [
           {
             label: new Date().getFullYear(),
             backgroundColor: "#ed64a6",
             borderColor: "#ed64a6",
-            data: [30, 78, 56, 34, 100, 45, 13],
+            data: labelData,
             fill: false,
-            barThickness: 8,
-          },
-          {
-            label: new Date().getFullYear() - 1,
-            fill: false,
-            backgroundColor: "#4c51bf",
-            borderColor: "#4c51bf",
-            data: [27, 68, 86, 74, 10, 4, 87],
             barThickness: 8,
           },
         ],
@@ -39,7 +23,7 @@ export default function CardBarChart() {
         responsive: true,
         title: {
           display: false,
-          text: "Orders Chart",
+          text: chartTitle,
         },
         tooltips: {
           mode: "index",
@@ -57,6 +41,36 @@ export default function CardBarChart() {
           position: "bottom",
         },
         scales: {
+          x: {
+            display: true,
+            title: {
+              display: true,
+              text: xTitle,
+              color: '#911',
+              font: {
+                family: 'Comic Sans MS',
+                size: 20,
+                weight: 'bold',
+                lineHeight: 1.2,
+              },
+              padding: {top: 20, left: 0, right: 0, bottom: 0}
+            }
+          },
+          y: {
+            display: true,
+            title: {
+              display: true,
+              text: yTitle,
+              color: '#191',
+              font: {
+                family: 'Times',
+                size: 20,
+                style: 'normal',
+                lineHeight: 1.2
+              },
+              padding: {top: 30, left: 0, right: 0, bottom: 0}
+            },
+          },
           xAxes: [
             {
               display: false,
@@ -108,7 +122,7 @@ export default function CardBarChart() {
                 Performance
               </h6>
               <h2 className="text-blueGray-700 text-xl font-semibold">
-                Total orders
+                {chartTitle}
               </h2>
             </div>
           </div>

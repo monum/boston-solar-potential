@@ -143,6 +143,7 @@ export default function Footer() {
           <hr className="my-6 border-blueGray-300" />
           <div className="flex flex-wrap items-center md:justify-between justify-center">
             <div className="w-full md:w-4/12 px-4 mx-auto text-center">
+            
               <div className="text-sm text-blueGray-500 font-semibold py-1">
                 Copyright © {new Date().getFullYear()} Notus NextJS by{" "}
                 <a
@@ -152,6 +153,10 @@ export default function Footer() {
                   Creative Tim
                 </a>
                 .
+              </div>
+
+              <div className="text-xs font-thin text-blueGray-500">
+              Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
               </div>
             </div>
           </div>

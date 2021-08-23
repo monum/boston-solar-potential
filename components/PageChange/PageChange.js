@@ -11,7 +11,7 @@ export default function PageChange(props) {
       <div
         className="bg-cover fixed z-40 w-full h-full top-0 left-0"
         style={{
-          backgroundImage: "url('/img/img-1-1000x600.jpg')",
+          backgroundImage: "url('https://images.unsplash.com/photo-1602095656818-c66394568279?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1808&q=80')",
         }}
       ></div>
       <div className="top-0 left-0 w-full h-full block z-50 absolute bg-black bg-opacity-50"></div>

@@ -1,74 +1,82 @@
-import React, {useEffect, Component } from 'react';
-//components
+import React, { useContext, useEffect, Component } from "react";
+import { useRouter } from "next/router";
+import SessionContext from "pages/sessionContext.js"
+import mapboxgl from "@mapbox/mapbox-gl-geocoder";
+import "components/SearchBar/SearchBar.module.css";
 
-const token = "pk.eyJ1Ijoibm9qaWJlIiwiYSI6ImNrcHloOXg1OTA0M3cyb21uYW83d2V3MGwifQ.GlZLAGPrDIf1lihGKJIBqw"
+
+
 
 
 export default function SearchBar() {
-    //Wait for the component to load before attempting to inject any data
+  //Wait for the component to load before attempting to inject any data
 
-    useEffect(() => {
-        //listen to the input form for text being inserted
-    const search = document.getElementById("search");
-    const matchList = document.getElementById("match-list");
-    
+  const token = process.env.MAPBOX_API_KEY;
+  const router = new useRouter();
+  const sessionContext = useContext(SessionContext);
+  const {setGeoData,
+    geoData,
+    propertyData,
+    setPropertyData,
+    solarSavings,
+    setSolarSavings} = sessionContext;
+  
 
-    const searchBoston = async searchText => {
-        const res = await fetch('https://data.boston.gov/datastore/odata3.0/c4b7331e-e213-45a5-adda-052e4dd31d41?$format=json');
-        const data = await res.json();
-        const addresses = data.value;
-    
-        let matches = addresses.filter(address => {
-            const regex = new RegExp(`^${searchText}`, 'gi');
+  useEffect(() => {
+    mapboxgl.accessToken =
+      "pk.eyJ1Ijoibm9qaWJlIiwiYSI6ImNrcHloOXg1OTA0M3cyb21uYW83d2V3MGwifQ.GlZLAGPrDIf1lihGKJIBqw";
+    const geocoder = new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken,
+      placeholder: "Enter Your Address",
+      bbox: [-71.191155981, 42.227925172, -70.986224049, 42.396978995],
+    });
 
-            return address.MAIL_ADDRESS.match(regex)
-        });
-    
-        if(searchText.length == 0){
-            matches = [];
-        };
-    
-        outputHTML(matches);
-    };
-    
-    const outputHTML = matches => {
-        if(matches.length > 0){
-            const html = matches.map(match => `
-            <div onClick={handleClickStreet} class="border-b border-l text-gray-800 border-gray-200 bg-white">
-            <p class="w-full text-left p-2 "> ${match.MAIL_ADDRESS}, ${match.CITY} </p>
-            </div>
-            `).join('');
-    
-            matchList.innerHTML = html;
-        }
+    geocoder.addTo("#geocoder");
 
-        else{
-            const html = ``;
-            matchList.innerHTML = html;
-        }
-    }
-    
-    search.addEventListener('input', () =>searchBoston(search.value));
-});
-    
-    return (
-        
-    <form autoComplete="off" class="w-11/12 mt-4 flex lg:w-6/12 px-4 ml-auto">
-        <input type="text" id="search" class="w-full border-t mr-0 border-b border-l text-gray-800 border-gray-200 bg-white" placeholder="Enter Your Address"/>
-        <button class="flex-none rounded-r bg-red-500  text-white font-bold p-4 uppercase border-t border-b border-r ">
-            Check My Roof
-            </button>
-        
-</form>
+    // Add geocoder result to container.
+    geocoder.on("result", (e) => {
+      
+      setGeoData(e.result)
+      
+      router.push({
+        pathname: `/results/`,
+        query: { lng: e.result.center[0], lat: e.result.center[1] },
+      });
+    });
 
-    );
+  });
+
+  return (
+    <div className="w-full absolute">
+      <div
+        id="geocoder"
+        className=" mt-4 mx-4 flex justify-center"
+      ></div>
+      <pre id="result"></pre>
+    </div>
+
+  );
 }
 
 
+const variables = [
+  'ENV_LOCAL_VARIABLE_MAPBOX_KEY',
+  'ENV_LOCAL_PVWATTS_KEY'
+]
 
+export async function getServerSideProps() {
+  const items = {}
 
-//search files and filter
+  variables.forEach((variable) => {
+    if (process.env[variable]) {
+      items[variable] = process.env[variable]
+    }
+  })
 
-
-
-
+  return {
+    // Do not pass any sensitive values here as they will
+    // be made PUBLICLY available in `pageProps`
+    props: { env: items },
+    revalidate: 1,
+  }
+}

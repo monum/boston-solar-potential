@@ -3,10 +3,13 @@ import ReactDOM from "react-dom";
 import App from "next/app";
 import Head from "next/head";
 import Router from "next/router";
+import {SessionProvider} from "pages/sessionContext.js"
 
 import PageChange from "components/PageChange/PageChange.js";
 
+import "mapbox-gl/dist/mapbox-gl.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+
 import "styles/tailwind.css";
 
 Router.events.on("routeChangeStart", (url) => {
@@ -58,9 +61,10 @@ export default class MyApp extends App {
 
     return { pageProps };
   }
+
   render() {
     const { Component, pageProps } = this.props;
-
+    
     const Layout = Component.layout || (({ children }) => <>{children}</>);
 
     return (
@@ -70,12 +74,18 @@ export default class MyApp extends App {
             name="viewport"
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
           />
-          <title>Notus NextJS by Creative Tim</title>
-          <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+          <link href="https://api.mapbox.com/mapbox-gl-js/v2.4.0/mapbox-gl.css" rel="stylesheet"></link>
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.4.0/mapbox-gl.js"></script>
+
+
         </Head>
+        <SessionProvider>  
         <Layout>
-          <Component {...pageProps} />
+           
+            <Component {...pageProps} />
+          
         </Layout>
+        </SessionProvider>
       </React.Fragment>
     );
   }

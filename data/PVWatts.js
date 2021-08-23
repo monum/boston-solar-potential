@@ -1,0 +1,226 @@
+import {useContext, useState} from "react"
+import SessionContext from "pages/sessionContext";
+import LoanJS from "loanjs";
+
+const {geoData,
+  setGeoData,
+  propertyData,
+  setPropertyData,
+  solarSavings,
+  setSolarSavings} = useContext(SessionContext);
+/**
+ * Calculates the total upfront cost of the system based on the pvSystemCostPerWatt
+ * @param {*} roof 
+ * @param {*} isBattery 
+ * @returns 
+ */
+export function calculatePVSystemCost(roof, isBattery=false) {
+  return roof.systemSize * pvSystemCostPerWatt * 1000 + (isBattery ? storageCost : 0)
+}
+
+export function calculateTaxDeductedSystemCost(baseCost,taxProgram = "Federal Tax Credit", income=0){
+  return baseCost - calculateTaxCredit(baseCost)
+}
+
+export function calculateTaxCredit(baseCost, income = 0, taxProgram="Federal Tax Credit"){
+
+  switch(taxProgram){
+
+    case "Federal Tax Credit":
+      
+    return taxReduction += baseCost*.26
+
+    case "Residential Renewable Energy Income Tax Credit":
+      
+      var counter = 0;
+      let incentiveAmount = income*.15;
+      const distributed = []
+           
+           while ( counter < 3 ){
+             
+             if (incentiveAmount > 1000) {
+               incentiveAmount-=1000;
+               distributed[counter++] = 1000;
+             }
+     
+             else if(incentiveAmount > 0){
+               distributed[counter++] = incentiveAmount 
+               incentiveAmount = 0;
+             }
+     
+             else distributed[counter++] = 0;
+           }
+     
+           return distributed
+  }
+}
+
+export function calculateLoan(years, downPayment, baseCost, interestRate){
+  taxCredit = 3835;
+  
+  return LoanJS.Loan(baseCost-downPayment-taxCredit,
+    years, 
+    interestRate,
+    false)
+}
+
+
+export function calculateMultiYearSavings(years, roof) {
+  const savings = []
+  
+  for(let year= 1; i < years; i++){
+    if (year == 0) savings.push(0);
+    else if (year == 1 ) savings.push(.978*roof.performanceMetrics.ac_annual * (propertyData.retailElectricityRate).toFixed(2) * (1+propertyData.yearlyElectricityRateIncrease));
+    else{
+      savings[year-1] * .995 
+      * (propertyData.retailElectricityRate).toFixed(2) 
+      * (1+propertyData.yearlyElectricityRateIncrease);
+    }
+  }
+
+  return savings;
+}
+
+export function calculateUpfrontNetCostSavings(taxDeductedCost, years, roof){
+  const annualPVSavings = calculateMultiYearSavings(years, roof)
+  annualPVSavings[0] = annualPVSavings[0] - taxDeductedCost;
+  return annualPVSavings;
+}
+
+export function calculateLoanNetCostSavings(years, roof, downPayment, baseCost, interestRate) {
+  const netCostSavings = []
+  
+  const loan = calculateLoan(years, downPayment, baseCost, interestRate);
+  const annualPVSavings = calculateMultiYearSavings(years, roof)
+
+  for (let year = 0; year < years; year++){
+    if (year == 0) netCostSavings.push(annualPVSavings[year])
+    netCostSavings.push(annualPVSavings[year] - loan.installments[year-1].installment)
+  }
+
+  return netCostSavings;
+}
+
+export function calculateAnnualPVProduction(roof, years){
+  
+  const production = []
+
+  for (let year = 0; index < years; index++) {
+    if (year == 0) production.push(0)
+    else if (year ==1) production.push(roof.performanceMetrics.annual_ac*.978);
+    else production.push(roof.performanceMetrics.annual_ac*.995)
+  }
+
+  return production
+
+}
+
+export function calculatePPA(years, ppaRate, ppaEscalator, roof) {
+  let production = calculateAnnualPVProduction(roof, years);
+  
+  ppaCosts = []
+
+  for (let year = 0; year < years; year++) {
+    if(year = 0)ppaCosts.push(0);
+    else if(year = 1)ppaCosts.push(ppaRate*production[1])
+    else ppaCosts.push(production[i]*Math.pow((1+ppaEscalator,year)*ppaRate))
+  }
+
+  return ppaCosts
+}
+
+
+export function calculateNetPPASavings(years, ppaRate, ppaEscalator, roof){
+
+  const netCostSavings = []
+  const annualPVSavings = calculateMultiYearSavings(years, roof)
+  const annualPPACost = calculatePPA(years, ppaRate, ppaEscalator, roof)
+
+  for (let year = 0; year < years; year++) {
+    netCostSavings.push(annualPPASavings[year] - annualPPACost[year])
+  }
+
+  return netCostSavings;
+}
+
+/**
+ * Set the defaults for the property: area, system size, solar performance, 
+ * @param {*} area 
+
+ */
+export function initSolarSavings(area){
+  console.log(geoData)
+  const [lng, lat] = geoData != {} ? geoData.geometry.coordinates : [-71.0596, 42.3605];
+    
+    setPropertyData({
+      pvSystemCostPerWatt: 2.86,
+      retailElectricityRate: getUtilityRates(lng, lat),
+      yearlyElectricityRateIncrease: .0352,
+      area: area,
+      performanceMetrics: getNRELResults(lng, lat, area),
+      }
+    )
+}
+
+export default function calculateNetSolarSavings(area){
+
+  initSolarSavings(area);
+  const roof = propertyData;
+
+  const upfrontBase = calculatePVSystemCost(roof, true)
+  const deductedBase = calculateTaxDeductedSystemCost(baseCost)
+
+  const upfrontSavings = calculateUpfrontNetCostSavings(deductedBase, 25, roof);
+  const loanSavings = calculateLoanNetCostSavings(25, roof, 0, upfrontBase, .05);
+  const ppaSavings = calculateNetPPASavings(25, .20, .02, roof)
+
+  setSolarSavings ({
+    upfrontSavings : upfrontSavings,
+    loanSavings: loanSavings,
+    ppaSavings: loanSavings,
+  })
+
+}
+
+
+
+/**
+
+
+
+
+ * Get the results from NREL after the roof drawing has given the area of the roof.
+ * 
+ * @param {*} lng
+ * @param {*} lat
+ * @param {*} area
+ * @returns
+ * poa_monthly (kWh/m2)
+ * dc_monthly	(kWhdc)
+ * ac_monthly	Type: array of decimal	Monthly AC system output. (kWhac)
+ * ac_annual	Type: decimal	Annual AC system output. (kWhac)
+ */
+export async function getNRELResults(lng, lat, area=null) {
+  const NRELKey = process.env.NREL_APIKEY;
+  const systemCapacity = (area < 0 || null ) ? 4.5 : area*.15;
+  
+  const res = await fetch(
+    `https://developer.nrel.gov/api/pvwatts/v6.json?api_key=${NRELKey}&lat=${lat}&lon=${lng}&system_capacity=${systemCapacity}&azimuth=180&tilt=40&array_type=1&module_type=1&losses=14.08`
+  );
+
+  const data = await res.json();
+  console.log(data);
+  return data;
+}
+
+export async function getUtilityRates(lng, lat) {
+  const NRELKey = process.env.NREL_APIKEY;
+  
+  const res = await fetch(
+    `https://developer.nrel.gov/api/utility_rates/v3.format?parameters=${NRELKey}&lat=${lat}&lon=${lng}`
+  );
+
+  const data = await res.json();
+  console.log(data);
+  return data;
+}
